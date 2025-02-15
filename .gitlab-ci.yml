@@ -1,0 +1,38 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - main
+
+test:
+  stage: test
+  image: python:3.9-slim
+  script:
+    - echo "Installing dependencies..."
+    - pip install -r requirements.txt
+    - echo "Running tests..."
+    - pytest test_app.py            # Execute the test file
+  only:
+    - main    
+
+deploy:
+  stage: deploy
+  image: bitnami/kubectl:latest     # Use kubectl for deployment
+  script:
+    - echo "Applying Kubernetes configurations..."
+    - kubectl apply -f kubernetes/deployment.yaml
+    - kubectl apply -f kubernetes/service.yaml
+    - echo "Deployment complete!"
+  only:
+    - main                          # Deploy only on the main branch

@@ -1,0 +1,38 @@
+THIS IS THE STEPS TO FOLLOW TO RUN THE APPLICATION
+DELETE THE FILE BEFORE UPLOADING
+
+# STEP 1 
+# build the docker
+	docker build -t Chat-Analyser .
+
+# STEP 2
+# run the docker image 
+	docker run -p 8501:8501 Chat-Analyser
+
+# STEP 3
+# push it to the the container registry like Docker Hub
+	docker tag Chat-Analyser:latest sumitu21/Chat-Analyser:latest
+	docker push sumitu21/Chat-Analyser:latest
+	
+#STEP 
+#working with minikube  be in the root folder/projectfolder
+	minikube start
+	minikube status
+
+	kubectl apply -f kubernetes/deployment.yaml
+	kubectl apply -f kubernetes/service.yaml
+#deployment and service status
+	kubectl get deployments
+	kubectl get pods
+	kubectl get svc
+#access the service
+	minikube service Chat-Analyser
+
+
+
+
+
+
+
+
+
